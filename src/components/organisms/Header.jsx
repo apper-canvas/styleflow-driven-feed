@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
 import ApperIcon from "@/components/ApperIcon";
-
+import { fetchCartItems } from "@/store/cartSlice";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { totalCount } = useSelector(state => state.cart);
 
+  useEffect(() => {
+    dispatch(fetchCartItems());
+  }, [dispatch]);
   const categories = [
     { name: "Men", path: "/category/men" },
     { name: "Women", path: "/category/women" },
@@ -57,7 +63,7 @@ const Header = () => {
               onClick={() => navigate("/wishlist")}
               className="relative p-2"
             >
-              <ApperIcon name="Heart" size={20} />
+<ApperIcon name="Heart" size={20} />
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
                 0
               </span>
@@ -69,10 +75,16 @@ const Header = () => {
               onClick={() => navigate("/cart")}
               className="relative p-2"
             >
-              <ApperIcon name="ShoppingBag" size={20} />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
-                0
-              </span>
+<ApperIcon name="ShoppingBag" size={20} />
+              <motion.span 
+                key={totalCount}
+                initial={{ scale: 1 }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.3 }}
+                className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center"
+              >
+                {totalCount}
+              </motion.span>
             </Button>
 
             {/* Mobile Menu Button */}

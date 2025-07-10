@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 import Button from "@/components/atoms/Button";
 import ApperIcon from "@/components/ApperIcon";
-import { updateCartItem, removeFromCart } from "@/services/api/cartService";
+import { updateCartItemQuantity, removeItemFromCart } from "@/store/cartSlice";
 
 const CartItem = ({ item, onUpdate, onRemove }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  const handleQuantityChange = async (newQuantity) => {
+const handleQuantityChange = async (newQuantity) => {
     if (newQuantity < 1) return;
     
     setIsLoading(true);
     try {
-      await updateCartItem(item.Id, { quantity: newQuantity });
+      await dispatch(updateCartItemQuantity({ id: item.Id, quantity: newQuantity })).unwrap();
       onUpdate();
       toast.success("Cart updated successfully!");
     } catch (error) {
@@ -22,10 +24,10 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
     }
   };
 
-  const handleRemove = async () => {
+const handleRemove = async () => {
     setIsLoading(true);
     try {
-      await removeFromCart(item.Id);
+      await dispatch(removeItemFromCart(item.Id)).unwrap();
       onRemove();
       toast.success("Item removed from cart");
     } catch (error) {

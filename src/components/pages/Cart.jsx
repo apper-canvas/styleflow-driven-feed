@@ -2,36 +2,23 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
 import Button from "@/components/atoms/Button";
 import CartItem from "@/components/molecules/CartItem";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import ApperIcon from "@/components/ApperIcon";
-import { getCartItems, clearCart } from "@/services/api/cartService";
+import { fetchCartItems, clearAllCart } from "@/store/cartSlice";
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const { items: cartItems, loading, error } = useSelector(state => state.cart);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const loadCartItems = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      
-      const data = await getCartItems();
-      setCartItems(data);
-    } catch (err) {
-      setError("Failed to load cart items. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    loadCartItems();
-  }, []);
+    dispatch(fetchCartItems());
+  }, [dispatch]);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
@@ -50,7 +37,7 @@ const Cart = () => {
     }, 0);
 };
 
-  const handleCheckout = async () => {
+const handleCheckout = async () => {
     try {
       setCheckoutLoading(true);
       
@@ -58,10 +45,8 @@ const Cart = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Clear cart after successful checkout
-      await clearCart();
+      await dispatch(clearAllCart()).unwrap();
       
-      // Update local state
-      setCartItems([]);
       setShowCheckoutModal(false);
       
       // Show success message
@@ -93,9 +78,9 @@ const Cart = () => {
   }
 
   if (error) {
-    return (
+return (
       <div className="container mx-auto px-4 py-8">
-        <Error message={error} onRetry={loadCartItems} />
+        <Error message={error} onRetry={() => dispatch(fetchCartItems())} />
       </div>
     );
   }
@@ -141,10 +126,10 @@ const Cart = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <CartItem
+<CartItem
                   item={item}
-                  onUpdate={loadCartItems}
-                  onRemove={loadCartItems}
+                  onUpdate={() => dispatch(fetchCartItems())}
+                  onRemove={() => dispatch(fetchCartItems())}
                 />
               </motion.div>
             ))}
