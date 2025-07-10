@@ -64,7 +64,7 @@ const Home = () => {
               From trending styles to timeless classics, find everything you need to express your unique personality.
             </motion.p>
             
-            <motion.div
+<motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -76,8 +76,8 @@ const Home = () => {
                 size="lg"
                 className="bg-white text-primary hover:bg-gray-100"
               >
-                <Link to="/category/women">
-                  Shop Women's Collection
+                <Link to="/category/men">
+                  Shop Men's Collection
                 </Link>
               </Button>
               
@@ -87,8 +87,8 @@ const Home = () => {
                 size="lg"
                 className="border-white text-white hover:bg-white hover:text-primary"
               >
-                <Link to="/category/men">
-                  Shop Men's Collection
+                <Link to="/category/women">
+                  Shop Women's Collection
                 </Link>
               </Button>
             </motion.div>
