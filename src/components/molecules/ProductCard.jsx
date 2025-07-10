@@ -251,21 +251,7 @@ return (
         onClose={() => setIsQuickViewOpen(false)}
         mousePosition={mousePosition}
       />
-    </>
-<Button
-              onClick={handleAddToCart}
-              disabled={!product.inStock || isAddingToCart}
-              className="w-full"
-              size="sm"
-            >
-              {isAddingToCart ? (
-                <ApperIcon name="Loader2" size={16} className="animate-spin" />
-              ) : !product.inStock ? (
-                "Out of Stock"
-              ) : (
-                "Add to Cart"
-              )}
-            </Button>
+</>
   );
 };
 
